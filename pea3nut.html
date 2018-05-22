@@ -10,17 +10,17 @@
         <header>
             <p>
                 Order By
-                <select ng-model="orderBy">
+                <select ng-model="orderBy" ng-change="countShowedData()">
                     <option value="id">id</option>
                     <option value="date">data</option>
                 </select>
             </p>
             <p>
-                Page Capacity <input type="number" ng-model="pageCapacity" />
+                Page Capacity <input type="number" ng-model="pageCapacity" ng-change="countShowedData()" />
             </p>
             <p>
                 Now:
-                <select ng-model="pageIndex">
+                <select ng-model="pageIndex" ng-change="countShowedData()">
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -28,7 +28,7 @@
             </p>
         </header>
         <ul>
-            <li ng-repeat="item in showedData()">#{{item.id}} - {{item.date}}</li>
+            <li ng-repeat="item in showedData">#{{item.id}} - {{item.date}}</li>
         </ul>
     </div>
     <script>
@@ -48,9 +48,11 @@
             $scope.orderBy = 'id';
             $scope.data = [];
 
-            $scope.showedData =function(){
-                console.log('re-compute showedData');
-                return $scope.data
+
+            $scope.showedData =[];
+            $scope.countShowedData =function(){
+                console.log('call countShowedData');
+                $scope.showedData =$scope.data
                     .slice(
                         ($scope.pageIndex-1)*$scope.pageCapacity,
                         $scope.pageIndex*$scope.pageCapacity
@@ -59,8 +61,10 @@
                 ;
             };
 
+
             setTimeout(function(){
                 $scope.data = Data;
+                $scope.countShowedData();
                 $scope.$apply();
             },100);
         });
