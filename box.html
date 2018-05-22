@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+    <meta charset="UTF-8">
+    <script src="angularjs.js"></script>
+    <title>Title</title>
+</head>
+<body>
+    <div ng-controller="pea3nutCtrl">
+        <header>
+            <p>
+                Order By
+                <select ng-model="orderBy" ng-change="countShowedData()">
+                    <option value="id">id</option>
+                    <option value="date">data</option>
+                </select>
+            </p>
+            <p>
+                Page Capacity <input type="number" ng-model="pageCapacity" ng-change="countShowedData()" />
+            </p>
+            <p>
+                Now:
+                <select ng-model="pageIndex" ng-change="countShowedData()">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+            </p>
+        </header>
+        <ul>
+            <li ng-repeat="item in showedData">#{{item.id}} - {{item.date}}</li>
+        </ul>
+    </div>
+    <script>
+        var Data =[
+            { id: 1, date: 358596281432.4714 },
+            { id: 2, date: 3422450638.22815 },
+            { id: 3, date: 89653892831.68024 },
+            { id: 4, date: 757183053468.721 },
+            { id: 5, date: 429053634248.5816646 },
+        ];
+    </script>
+    <script>
+        var app = angular.module('app', []);
+        app.controller('pea3nutCtrl', function($scope) {
+            $scope.pageIndex ='1';
+            $scope.pageCapacity = 2;
+            $scope.orderBy = 'id';
+            $scope.data = Data;
+
+
+            $scope.showedData =[];
+            $scope.countShowedData =function(){
+                console.log('call countShowedData');
+                $scope.showedData =$scope.data
+                    .slice(
+                        ($scope.pageIndex-1)*$scope.pageCapacity,
+                        $scope.pageIndex*$scope.pageCapacity
+                    )
+                    .sort(function(a,b){ return a[$scope.orderBy]-b[$scope.orderBy] })
+                ;
+            };
+
+
+            setTimeout(function(){
+                $scope.data = Data;
+                $scope.countShowedData();
+                $scope.$apply();
+            },100);
+        });
+    </script>
+</body>
+</html>
